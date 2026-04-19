@@ -15,7 +15,7 @@ let latest = {};
 
 mqttClient.on('connect', () => {
   console.log('Connected to HiveMQ');
-  mqttClient.subscribe(['quake/log', 'quake/state', 'quake/buzzer', 'quake/led']); // ← quake/log instead of quake/pga
+  mqttClient.subscribe(['quake/log', 'quake/state', 'quake/buzzer', 'quake/led', 'quake/battery']);
 });
 
 mqttClient.on('message', (topic, message) => {
@@ -24,7 +24,7 @@ mqttClient.on('message', (topic, message) => {
 });
 
 setInterval(async () => {
-  console.log('latest:', latest);  // ← add this to see what's being received
+  console.log('latest:', latest); 
 
   if (!latest.log) return;
   if (latest.state !== '1') return;
@@ -36,6 +36,7 @@ setInterval(async () => {
       eq_state: true,
       buzzer:   latest.buzzer === '1',
       led:      latest.led === '1',
+      battery:  parseFloat(latest.battery),
     });
 
   if (error) console.error('Supabase error:', error.message);
